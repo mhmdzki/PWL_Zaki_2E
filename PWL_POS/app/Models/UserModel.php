@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Monolog\Level;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\LevelModel;
 
 
 class UserModel extends Authenticatable

@@ -100,5 +100,14 @@
     </script>
 
     @stack('js') <!-- Untuk custom JS -->
+
+    <script>
+        function confirmLogout(event) {
+            event.preventDefault();
+            if (confirm("Apakah Anda yakin ingin logout?")) {
+                document.getElementById('logoutForm').submit();
+            }
+        }
+    </script>    
 </body>
 </html>
