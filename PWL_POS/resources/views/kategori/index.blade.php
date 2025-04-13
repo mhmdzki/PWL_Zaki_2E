@@ -5,8 +5,11 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a href="{{ url('kategori/create') }}" class="btn btn-sm btn-primary mt-1">Tambah</a>
-                <button onclick="modalAction('{{ url('/kategori/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button> 
+                <button onclick="modalAction('{{ url('/kategori/import') }}')" class="btn btn-sm btn-info mt-1">Import Kategori</button>
+                <a class="btn btn-sm btn-primary mt-1" href="{{ url('/kategori/export_excel') }}"><i class="fa fa-file-excel mr-1"></i>Export Kategori Excel</a>
+                <a class="btn btn-sm btn-warning mt-1" href="{{ url('/kategori/export_pdf') }}"><i class="fa fa-file-pdf mr-1"></i>Export Kategori PDF</a>
+                <button onclick="modalAction('{{ url('kategori/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah
+                    Ajax</button>
             </div>
         </div>
         <div class="card-body">
@@ -16,22 +19,6 @@
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
-            <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group row">
-                    <label for="kategori_id" class="col-1 control-label col-form-label">Filter:</label>
-                    <div class="col-3">
-                      <select class="form-control" id="kategori_id" name="kategori_id" required>
-                        <option value="">- Semua -</option>
-                        @foreach ($kategori as $item)
-                            <option value="{{ $item->kategori_id }}">{{ $item->kategori_nama }}</option>
-                        @endforeach
-                      </select>
-                      <small class="form-text text-muted">Level Barang</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
             <table class="table table-bordered table-striped table-hover table-sm" id="table_kategori">
                 <thead>
                     <tr>
@@ -44,47 +31,61 @@
             </table>
         </div>
     </div>
-    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" data-width="75%" aria-hidden="true"></div> 
+
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
+        data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 @endsection
 
 @push('css')
 @endpush
-
 @push('js')
     <script>
-        function modalAction(url = ''){ 
-    $('#myModal').load(url,function(){ 
-        $('#myModal').modal('show'); 
-    }); 
-}
+        function modalAction(url = '') {
+            $('#myModal').load(url, function() {
+                $(this).modal('show');
+            });
+        }
 
-       $(document).ready(function() {
-    var table = $('#table_kategori').DataTable({
-        serverSide: true,
-        processing: true,
-        ajax: {
-            url: "{{ url('kategori/list') }}",
-            type: "POST",
-            dataType: "json",
-            data: function(d) {
-                d.kategori_id = $('#kategori_id').val(); // Kirim kategori_id ke server
-                d._token = "{{ csrf_token() }}"; // Laravel membutuhkan CSRF token
-            }
-        },
-        columns: [
-            { data: "DT_RowIndex", className: "text-center", orderable: false, searchable: false },
-            { data: "kategori_kode", orderable: true, searchable: true },
-            { data: "kategori_nama", orderable: true, searchable: true },
-            { data: "aksi", orderable: false, searchable: false }
-        ]
-    });
+        var dataKategori;
+        $(document).ready(function() {
+            dataKategori = $('#table_kategori').DataTable({
+                // serverSide: true, jika ingin menggunakan server side processing
+                serverSide: true,
+                ajax: {
+                    "url": "{{ url('kategori/list') }}",
+                    "dataType": "json",
+                    "type": "POST",
+                },
+                columns: [{
+                        // nomor urut dari laravel datatable addIndexColumn()
+                        data: "DT_RowIndex",
+                        className: "text-center",
+                        orderable: false,
+                        searchable: false
+                    },
 
-    // Event listener untuk filter berdasarkan kategori_id
-    $('#kategori_id').change(function() {
-        table.ajax.reload(); // Reload DataTables saat filter berubah
-    });
-});
+                    {
+                        data: "kategori_kode",
+                        className: "",
+                        orderable: true,
+                        searchable: true
+                    },
 
+                    {
+                        data: "kategori_nama",
+                        className: "",
+                        orderable: true,
+                        searchable: true
+                    },
 
+                    {
+                        data: "aksi",
+                        className: "",
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
+            });
+        });
     </script>
 @endpush
