@@ -10,6 +10,7 @@ use Monolog\Level;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,8 +43,11 @@ Route::post('login', [AuthController::class, 'postlogin']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('register', [AuthController::class, 'register'])->name('register');
 Route::post('register', [AuthController::class, 'postregister']);
+
 Route::middleware('Authorize:ADM,SPL,STF,MNG')->group(function () {
-    Route::get('/', [WelcomeController::class, 'index']);
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/', [WelcomeController::class, 'index']);
+    });
 
     Route::group(['prefix' => 'user'], function () {
         Route::get('/', [UserController::class, 'index']);
@@ -64,6 +68,7 @@ Route::middleware('Authorize:ADM,SPL,STF,MNG')->group(function () {
         Route::post('/import_ajax', [UserController::class, 'import_ajax']);
         Route::get('/export_excel', [UserController::class, 'export_excel']);
         Route::get('/export_pdf', [UserController::class, 'export_pdf']);
+
     
     });
     
@@ -155,4 +160,10 @@ Route::middleware('Authorize:ADM,SPL,STF,MNG')->group(function () {
             Route::get('/export_pdf', [SupplierController::class, 'export_pdf']);
 
         }); 
+
+    Route::group(['prefix' => 'profile'], function () {
+        Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
+        Route::post('update_photo', [ProfileController::class, 'update_photo'])->name('profile.update_photo');
+        Route::post('/profile/update_avatar', [ProfileController::class, 'updateAvatar'])->name('profile.update_avatar');
+    });
 });

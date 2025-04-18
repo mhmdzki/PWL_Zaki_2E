@@ -59,7 +59,7 @@ class AuthController extends Controller
             'username' => $request->username,
             'nama' => $request->nama,
             'password' => bcrypt($request->password),
-            'level_id' => 4,
+            'level_id' => 1,
         ]);
 
         if ($request->ajax() || $request->wantsJson()) {

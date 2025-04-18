@@ -25,7 +25,7 @@ class SupplierController extends Controller
             'title' => 'Daftar supplier yang terdaftar dalam sistem',
         ];
 
-        $activeMenu = 'supplier';
+        $activeMenu = 'supplier'; // untuk set menu yang sedang aktif
 
         $supplier = SupplierModel::all();
 
@@ -65,7 +65,7 @@ class SupplierController extends Controller
             'title' => 'Tambah supplier baru',
         ];
 
-        $activeMenu = 'supplier';
+        $activeMenu = 'supplier'; // untuk set menu yang sedang aktif
 
         return view('supplier.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
@@ -104,7 +104,7 @@ class SupplierController extends Controller
             'title' => 'Detail supplier',
         ];
 
-        $activeMenu = 'supplier';
+        $activeMenu = 'supplier'; // untuk set menu yang sedang aktif
 
         $supplier = SupplierModel::find($id);
 
@@ -132,7 +132,7 @@ class SupplierController extends Controller
             'title' => 'Edit supplier',
         ];
 
-        $activeMenu = 'supplier';
+        $activeMenu = 'supplier'; // untuk set menu yang sedang aktif
 
         $supplier = SupplierModel::find($id);
 
@@ -185,32 +185,54 @@ class SupplierController extends Controller
     }
 
     public function store_ajax(Request $request)
-    {
+{
+    try {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'supplier_kode' => 'required|string|max:10|unique:m_supplier,supplier_kode',
-                'supplier_nama' => 'required|string|max:100',
+                'supplier_nama'   => 'required|string|max:100',
                 'supplier_alamat' => 'required|string|max:255',
+                'supplier_kontak' => 'required|string|max:100',
+                'supplier_email'  => 'required|email',
             ];
 
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
                 return response()->json([
-                    'status'  => false,
-                    'message' => 'Validasi Gagal',
+                    'status'   => false,
+                    'message'  => 'Validasi Gagal',
                     'msgField' => $validator->errors(),
                 ]);
             }
 
-            SupplierModel::create($request->all());
+            $supplier = SupplierModel::create([
+                'supplier_nama'   => $request->supplier_nama,
+                'supplier_alamat' => $request->supplier_alamat,
+                'supplier_kontak' => $request->supplier_kontak,
+                'supplier_email'  => $request->supplier_email
+            ]);
+
+            $supplier->supplier_kode = 'SPL' . str_pad($supplier->supplier_id, 3, '0', STR_PAD_LEFT);
+            $supplier->save();
+
             return response()->json([
-                'status' => true,
-                'message' => 'Data supplier berhasil disimpan'
+                'status'  => true,
+                'message' => 'Data supplier berhasil disimpan',
+                'kode'    => $supplier->supplier_kode
             ]);
         }
+
         return redirect('/supplier');
+
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status'  => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ]);
     }
+}
+
+
 
     public function edit_ajax(string $id)
     {
@@ -298,6 +320,7 @@ class SupplierController extends Controller
     { 
         if($request->ajax() || $request->wantsJson()){ 
             $rules = [ 
+                // validasi file harus xls atau xlsx, max 1MB 
                 'file_supplier' => ['required', 'mimes:xlsx', 'max:1024'] 
             ]; 
  
@@ -310,19 +333,19 @@ class SupplierController extends Controller
                 ]); 
             } 
  
-            $file = $request->file('file_supplier');
+            $file = $request->file('file_supplier');  // ambil file dari request 
  
-            $reader = IOFactory::createReader('Xlsx');
-            $reader->setReadDataOnly(true);
-            $spreadsheet = $reader->load($file->getRealPath());
-            $sheet = $spreadsheet->getActiveSheet(); 
+            $reader = IOFactory::createReader('Xlsx');  // load reader file excel 
+            $reader->setReadDataOnly(true);             // hanya membaca data 
+            $spreadsheet = $reader->load($file->getRealPath()); // load file excel 
+            $sheet = $spreadsheet->getActiveSheet();    // ambil sheet yang aktif 
  
-            $data = $sheet->toArray(null, false, true, true);
+            $data = $sheet->toArray(null, false, true, true);   // ambil data excel 
  
             $insert = []; 
-            if(count($data) > 1){ 
+            if(count($data) > 1){ // jika data lebih dari 1 baris 
                 foreach ($data as $baris => $value) { 
-                    if($baris > 1){ 
+                    if($baris > 1){ // baris ke 1 adalah header, maka lewati 
                         $insert[] = [ 
                             'supplier_kode' => $value['A'], 
                             'supplier_nama' => $value['B'], 
@@ -333,6 +356,7 @@ class SupplierController extends Controller
                 } 
  
                 if(count($insert) > 0){ 
+                    // insert data ke database, jika data sudah ada, maka diabaikan 
                     SupplierModel::insertOrIgnore($insert);    
                 } 
  
