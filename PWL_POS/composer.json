@@ -14,6 +14,7 @@
         "laravel/tinker": "^2.8",
         "phpoffice/phpspreadsheet": "^4.1",
         "realrashid/sweet-alert": "^7.3",
+        "tymon/jwt-auth": "^2.2",
         "yajra/laravel-datatables-oracle": "^10.11"
     },
     "require-dev": {

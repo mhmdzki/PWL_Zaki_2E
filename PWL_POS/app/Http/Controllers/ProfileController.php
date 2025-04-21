@@ -41,44 +41,22 @@ class ProfileController extends Controller
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
             $filename = time().'.'.$file->getClientOriginalExtension();
-            $path = $file->storeAs('public/foto', $filename);
-            
-            // Hapus foto lama jika ada
+            $file->storeAs('public/foto', $filename);
+
             if ($user->foto_profil && Storage::exists('public/foto/'.$user->foto_profil)) {
                 Storage::delete('public/foto/'.$user->foto_profil);
             }
-            
+
             $user->foto_profil = $filename;
         }
 
         $user->save();
 
-        return redirect()->route('profile.index')
-            ->with('success', 'Profil berhasil diperbarui');
-    }
-
-    public function updateAvatar(Request $request)
-    {
-        $request->validate([
-            'photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
-
-        $user = Auth::user();
-        $file = $request->file('photo');
-        $filename = 'avatar_'.time().'.'.$file->getClientOriginalExtension();
-        $path = $file->storeAs('public/foto', $filename);
-        
-        // Hapus avatar lama jika ada
-        if ($user->foto_profil && Storage::exists('public/foto/'.$user->foto_profil)) {
-            Storage::delete('public/foto/'.$user->foto_profil);
-        }
-        
-        $user->foto_profil = $filename; 
-        $user->save();
-
         return response()->json([
-            'photo_url' => asset('public/foto/'.$filename),
-            'message' => 'Avatar berhasil diperbarui'
+            'status' => 'success',
+            'message' => 'Profil berhasil diperbarui',
+            'foto_url' => $user->foto_profil ? asset('storage/foto/'.$user->foto_profil) : null,
+            'nama' => $user->nama
         ]);
     }
 }

@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -100,29 +101,29 @@
         </tr>
     </table>
 
-    <h3 class="text-center">LAPORAN DATA SUPPLIER</h4>
-        <table class="border-all">
-            <thead>
+    <h3 class="text-center">LAPORAN DATA SUPPLIER</h3>
+    <table class="border-all">
+        <thead>
+            <tr>
+                <th class="text-center">No</th>
+                <th>Supplier ID</th>
+                <th>Supplier Kode</th>
+                <th>Nama</th>
+                <th>Alamat</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($supplier as $l)
                 <tr>
-                    <th class="text-center">No</th>
-                    <th>Supplier ID</th>
-                    <th>Supplier Kode</th>
-                    <th>Nama</th>
-                    <th>Alamat</th>
+                    <td class="text-center">{{ $loop->iteration }}</td>
+                    <td>{{ $l->supplier_id }}</td>
+                    <td>{{ $l->supplier_kode }}</td>
+                    <td>{{ $l->supplier_nama }}</td>
+                    <td>{{ $l->supplier_alamat }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach ($supplier as $l)
-                    <tr>
-                        <td class="text-center">{{ $loop->iteration }}</td>
-                        <td>{{ $l->supplier_id }}</td>
-                        <td>{{ $l->supplier_kode }}</td>
-                        <td>{{ $l->supplier_nama }}</td>
-                        <td>{{ $l->supplier_alamat }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+            @endforeach
+        </tbody>
+    </table>
 </body>
 
 </html>

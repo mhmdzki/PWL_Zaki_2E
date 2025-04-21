@@ -372,18 +372,16 @@ class KategoriController extends Controller
         exit;
     }
 
-    public function export_pdf(){
-        $kategori= KategoriModel::select('kategori_id','kategori_kode', 'kategori_nama')
-        ->orderBy('kategori_id')
-        ->get()
-        ;
+    public function export_pdf()
+    {
+        $kategori = KategoriModel::select('kategori_id', 'kategori_kode', 'kategori_nama')
+            ->orderBy('kategori_id')
+            ->get();
 
-        $pdf = FacadePdf::loadview('kategori.export_pdf', ['kategori' => $kategori]);
+        $pdf = FacadePdf::loadView('kategori.export_pdf', ['kategori' => $kategori]);
         $pdf->setPaper('A4', 'portrait');
-        $pdf->setOption("isRemoteEnabled", true);
-        $pdf->render();
+        $pdf->setOption('isRemoteEnabled', true);
 
-        return $pdf->stream('Data Barang '.date('Y-m-d H:i:s').'.pdf');
-
+        return $pdf->stream('Laporan Kategori ' . date('Y-m-d H:i:s') . '.pdf');
     }
 }

@@ -423,18 +423,18 @@ class SupplierController extends Controller
         exit;
     }
 
-    public function export_pdf(){
-        $supplier= SupplierModel::select('supplier_id', 'supplier_kode', 'supplier_nama', 'supplier_alamat')
-        ->orderBy('supplier_id')
-        ->get()
-        ;
+    public function export_pdf()
+    {
+        $supplier = SupplierModel::select('supplier_id', 'supplier_kode', 'supplier_nama', 'supplier_alamat')
+            ->orderBy('supplier_id')
+            ->get();
 
-        $pdf = FacadePdf::loadview('supplier.export_pdf', ['supplier' => $supplier]);
+        $pdf = FacadePdf::loadView('supplier.export_pdf', ['supplier' => $supplier]);
+
         $pdf->setPaper('A4', 'portrait');
-        $pdf->setOption("isRemoteEnabled", true);
-        $pdf->render();
 
-        return $pdf->stream('Data Supplier '.date('Y-m-d H:i:s').'.pdf');
+        $pdf->setOption('isRemoteEnabled', true);
 
+        return $pdf->stream('Data Supplier ' . date('Y-m-d H:i:s') . '.pdf');
     }
 }

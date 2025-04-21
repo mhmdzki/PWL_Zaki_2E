@@ -366,20 +366,26 @@ class LevelController extends Controller
         exit;
     }
 
-    public function export_pdf(){
-        $level= LevelModel::select('level_kode', 'level_nama')
+    public function export_pdf()
+{
+    // Mengambil data level
+    $level = LevelModel::select('level_kode', 'level_nama')
         ->orderBy('level_id')
-        ->get()
-        ;
+        ->get();
 
-        $pdf = FacadePdf::loadview('level.export_pdf', ['level' => $level]);
-        $pdf->setPaper('A4', 'portrait');
-        $pdf->setOption("isRemoteEnabled", true);
-        $pdf->render();
+    // Membuat PDF menggunakan view yang disesuaikan
+    $pdf = FacadePdf::loadView('level.export_pdf', ['level' => $level]);
+    
+    // Menentukan ukuran kertas dan orientasi
+    $pdf->setPaper('A4', 'portrait');
+    
+    // Menambahkan opsi untuk mengizinkan remote resources
+    $pdf->setOption('isRemoteEnabled', true);
 
-        return $pdf->stream('Data Level '.date('Y-m-d H:i:s').'.pdf');
+    // Mengirimkan file PDF untuk diunduh dengan nama yang dinamis
+    return $pdf->stream('Data Level ' . date('Y-m-d H:i:s') . '.pdf');
+}
 
-    }
 
 
 }

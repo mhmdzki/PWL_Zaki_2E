@@ -68,8 +68,7 @@ Route::middleware('Authorize:ADM,SPL,STF,MNG')->group(function () {
         Route::post('/import_ajax', [UserController::class, 'import_ajax']);
         Route::get('/export_excel', [UserController::class, 'export_excel']);
         Route::get('/export_pdf', [UserController::class, 'export_pdf']);
-
-    
+        Route::get('/{id}/show_ajax', [UserController::class, 'show_ajax']);
     });
     
     Route::group(['prefix' => 'level'], function () {
@@ -77,6 +76,7 @@ Route::middleware('Authorize:ADM,SPL,STF,MNG')->group(function () {
         Route::post('/list', [LevelController::class, 'list']);
         Route::get('/create', [LevelController::class, 'create']);
         Route::post('/', [LevelController::class, 'store']);
+        Route::get('/{id}/show_ajax', [LevelController::class, 'show_ajax']);
         Route::get('/create_ajax', [LevelController::class, 'create_ajax']);
         Route::post('/ajax', [LevelController::class, 'store_ajax']);
         Route::get('/{id}', [LevelController::class, 'show']);
@@ -100,6 +100,7 @@ Route::middleware('Authorize:ADM,SPL,STF,MNG')->group(function () {
         Route::get('/create', [KategoriController::class, 'create']);
         Route::post('/', [KategoriController::class, 'store']);
         Route::get('/create_ajax', [KategoriController::class, 'create_ajax']);
+        Route::get('/{id}/show_ajax', [KategoriController::class, 'show_ajax']);
         Route::post('/ajax', [KategoriController::class, 'store_ajax']);
         Route::get('/{id}', [KategoriController::class, 'show']);
         Route::get('/{id}/edit', [KategoriController::class, 'edit']);
@@ -122,6 +123,7 @@ Route::middleware('Authorize:ADM,SPL,STF,MNG')->group(function () {
         Route::post('/ajax', [BarangController::class, 'store_ajax']);
         Route::get('/{id}/edit_ajax', [BarangController::class, 'edit_ajax']);
         Route::put('/{id}/update_ajax', [BarangController::class, 'update_ajax']);
+        Route::get('/{id}/show_ajax', [BarangController::class, 'show_ajax']);
         Route::get('/', [BarangController::class, 'index']);
         Route::post('/list', [BarangController::class, 'list']);
         Route::get('/create', [BarangController::class, 'create']);
@@ -148,6 +150,7 @@ Route::middleware('Authorize:ADM,SPL,STF,MNG')->group(function () {
             Route::post('/list', [SupplierController::class, 'list']);
             Route::get('/create', [SupplierController::class, 'create']);
             Route::post('/', [SupplierController::class, 'store']);
+            Route::get('/{id}/show_ajax', [SupplierController::class, 'show_ajax']);
             Route::get('/{id}', [SupplierController::class, 'show']);
             Route::get('/{id}/edit', [SupplierController::class, 'edit']);
             Route::put('/{id}', [SupplierController::class, 'update']);

@@ -130,6 +130,7 @@ class BarangController extends Controller
         return view('barang.show_ajax', ['barang' => $barang]);
     }
 
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -427,20 +428,21 @@ class BarangController extends Controller
         exit;
     }
 
-    public function export_pdf(){
-        $barang= BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
-        ->orderBy('kategori_id')
-        ->orderBy('barang_kode')
-        ->with('kategori')
-        ->get()
-        ;
+    public function export_pdf()
+    {
+        $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
+            ->orderBy('kategori_id')
+            ->orderBy('barang_kode')
+            ->with('kategori')
+            ->get();
 
-        $pdf = FacadePdf::loadview('barang.export_pdf', ['barang' => $barang]);
+        $pdf = FacadePdf::loadView('barang.export_pdf', ['barang' => $barang]);
         $pdf->setPaper('A4', 'portrait');
-        $pdf->setOption("isRemoteEnabled", true);
-        $pdf->render();
 
-        return $pdf->stream('Data Barang '.date('Y-m-d H:i:s').'.pdf');
+        // Mengganti karakter ":" karena tidak kompatibel di nama file (khusus Windows)
+        $fileName = 'Data_Barang_' . date('Y-m-d_H-i-s') . '.pdf';
 
+        return $pdf->stream($fileName);
     }
+
 }

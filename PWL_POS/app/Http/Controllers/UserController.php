@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
-
-
 class UserController extends Controller
 {
     public function index()
